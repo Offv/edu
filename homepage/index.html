@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <link href="styles.css" rel="stylesheet">
+        <title>Vladys search</title>
+
+    </head>
+    <body>
+<div class=header>
+            <h1>Wikipedia searching</h1></div>
+            <div class="search-container">
+            <form id="search-form">
+                <input type="text" id="search-query" placeholder="Your request..." required>
+                <button type="submit">Search</button>
+            </form>
+            <div class="results" id="results"></div>
+        </div>
+
+        <script>
+           document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const query = document.getElementById('search-query').value.trim();
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const searchResults = data.query.search;
+
+                    if (searchResults.length > 0) {
+                        searchResults.forEach(result => {
+                            const resultElement = document.createElement('div');
+                            resultElement.classList.add('result-item');
+
+                            const titleElement = document.createElement('h2');
+                            titleElement.textContent = result.title;
+
+                            const snippetElement = document.createElement('p');
+                            snippetElement.innerHTML = result.snippet + '...';
+
+                            resultElement.appendChild(titleElement);
+                            resultElement.appendChild(snippetElement);
+                            resultsContainer.appendChild(resultElement);
+                        });
+                    } else {
+                        resultsContainer.textContent = 'No results found.';
+                    }
+                })
+                .catch(error => {
+                    resultsContainer.textContent = 'An error occurred while fetching the article.';
+                    console.error('Error fetching Wikipedia article:', error);
+                });
+        });
+        </script>
+
+    </body>
+    <footer>
+        <p>powered by Offvl</p>
+    </footer>
+
+
+</html>

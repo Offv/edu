@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell Stocks
+{% endblock %}
+
+{% block main %}
+<form action="/sell" method="post">
+    <div class="mb-3">
+        <label for="symbol" class="form-label">Stock Symbol</label>
+        <select id="symbol" name="symbol" class="form-control" onchange="updateMaxShares()">
+            {% for stock in portfolio %}
+            <option value="{{ stock.symbol }}" data-shares="{{ stock.shares }}">{{ stock.symbol }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="shares" class="form-label">Number of Shares</label>
+        <input type="number" id="shares" name="shares" class="form-control" min="1" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Sell</button>
+</form>
+
+<script>
+function updateMaxShares() {
+    var select = document.getElementById('symbol');
+    var sharesInput = document.getElementById('shares');
+    var selectedOption = select.options[select.selectedIndex];
+    var maxShares = selectedOption.getAttribute('data-shares');
+    sharesInput.setAttribute('max', maxShares);
+    if (sharesInput.value > maxShares) {
+        sharesInput.value = maxShares;
+    }
+}
+</script>
+{% endblock %}
