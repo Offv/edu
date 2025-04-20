@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   Portfolio
+{% endblock %}
+
+{% block main %}
+<h1>Portfolio</h1>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Shares</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in portfolio %}
+        <tr>
+            <td>{{ item.symbol or 'N/A' }}</td>
+            <td>{{ item.shares | default(0) }}</td>
+            <td>{{ item.price | usd }}</td>
+            <td>{{ item.total | usd }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center">No data available</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <p><strong>Cash:</strong> {{ cash | usd }}</p>
+    <p><strong>Total:</strong> {{ total | usd }}</p>
+</div>
+
+<a href="/buy" class="btn btn-primary mt-3">Buy More Stocks</a>
+<a href="/sell" class="btn btn-warning mt-3">Sell Stocks</a>
+{% endblock %}
