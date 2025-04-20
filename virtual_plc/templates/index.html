@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC System - Main Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>PLC System - Main Page</h1>
+
+    <!-- Graphs Section: Inlet Flow, Inlet Temperature, etc. -->
+    <div id="graphs-container">
+        <canvas id="inletFlowBar"></canvas>
+        <canvas id="inletTempBar"></canvas>
+        <canvas id="outletFlowBar"></canvas>
+        <canvas id="outletTempBar"></canvas>
+        <canvas id="heater1TempBar"></canvas>
+        <canvas id="heater2TempBar"></canvas>
+    </div>
+
+    <script>
+        var inletFlowBar, inletTempBar, outletFlowBar, outletTempBar, heater1TempBar, heater2TempBar;
+
+        // Initialize charts
+        function initializeCharts() {
+            inletFlowBar = new Chart(document.getElementById('inletFlowBar'), {
+                type: 'bar',
+                data: {
+                    labels: ['Inlet Flow'],
+                    datasets: [{
+                        label: 'Inlet Flow (CFM)',
+                        data: [0],
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)'
+                    }]
+                }
+            });
+
+            inletTempBar = new Chart(document.getElementById('inletTempBar'), {
+                type: 'bar',
+                data: {
+                    labels: ['Inlet Temp'],
+                    datasets: [{
+                        label: 'Inlet Temperature (°F)',
+                        data: [0],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    }]
+                }
+            });
+
+            // Repeat for the other charts...
+        }
+
+        // Function to fetch data and update the charts
+        function fetchDataAndUpdateCharts() {
+            $.get('/get_data', function(data) {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Update each chart with the new data
+                inletFlowBar.data.datasets[0].data = [data.inlet_flow];
+                inletFlowBar.update();
+
+                inletTempBar.data.datasets[0].data = [data.inlet_temp];
+                inletTempBar.update();
+
+                outletFlowBar.data.datasets[0].data = [data.outlet_flow];
+                outletFlowBar.update();
+
+                outletTempBar.data.datasets[0].data = [data.outlet_temp];
+                outletTempBar.update();
+
+                heater1TempBar.data.datasets[0].data = [data.heater1_temp];
+                heater1TempBar.update();
+
+                heater2TempBar.data.datasets[0].data = [data.heater2_temp];
+                heater2TempBar.update();
+            });
+        }
+
+        // Initialize charts and fetch data every 5 seconds
+        $(document).ready(function() {
+            initializeCharts();
+            fetchDataAndUpdateCharts();
+            setInterval(fetchDataAndUpdateCharts, 5000); // Update every 5 seconds
+        });
+    </script>
+</body>
+</html>

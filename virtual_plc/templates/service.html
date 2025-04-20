@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Page</title>
+    <script>
+        // Function to fetch data and update the table
+        function fetchAndUpdateData() {
+            fetch('/get_data')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const valueCell = document.getElementById(`value-${item.name}`);
+                        const inputField = document.getElementById(`input-${item.name}`);
+                        if (valueCell) valueCell.textContent = item.value; // Update displayed value
+                        if (inputField) inputField.value = item.value;     // Update input field
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Function to update a specific value
+        function updateValue(variableName) {
+            const inputField = document.getElementById(`input-${variableName}`);
+            const newValue = inputField.value;
+
+            // Send POST request to update the value
+            fetch('/update_value', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: variableName, value: newValue })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(`Value for ${variableName} updated to ${newValue}`);
+                        fetchAndUpdateData(); // Refresh the table
+                    } else {
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => console.error('Error updating value:', error));
+        }
+        
+
+
+        // Refresh data every 0.5 seconds
+        setInterval(fetchAndUpdateData, 500);
+
+        // Initial fetch on page load
+        window.onload = fetchAndUpdateData;
+    </script>
+</head>
+<body>
+    <h1>Service Page</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Variable Name</th>
+                <th>Value</th>
+                <th>Set New Value</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td id="value-{{ item.name }}">{{ item.value }}</td>
+                {% if item.name in ["HTRA_1Pulse_On", "HTRA_2_On", "HTRA_3_On", "HTRA_4_On", "HTRA_5_On",
+                                    "HTRB_1Pulse_On", "HTRB_2_On", "HTRB_3_On", "HTRB_4_On", "HTRB_5_On",
+                                    "HTR_Pause", "MSO_F2_Low", "HTR_Auto", "HTR_RESET", "HTR_Count"] %}
+                <td>
+                    <input type="number" id="input-{{ item.name }}" value="{{ item.value }}" min="0" max="1">
+                </td>
+                <tr>
+                    <td>HTRA_1Pulse_On</td>
+                    <td><input type="text" id="value-1" value="0"></td>
+                    <td><button onclick="applyValue(1)">Apply</button></td>
+                    <td><button onclick="resetOverride(1)">Reset</button></td>
+                  </tr>
+                {% else %}
+                <td colspan="2">N/A</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
