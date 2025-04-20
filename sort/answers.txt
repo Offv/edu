@@ -1,0 +1,50 @@
+sort1 uses: Bubble sort
+
+How do you know?: Used more time for reversed list, because comparing 2 elements per time worst is O(n^2)
+random
+5000 real    0m0,071s
+10000 real    0m0,231s
+50000 real    0m6,798s
+6,798/0,071=95 times more time needed for 10 times more elements
+reversed
+5000 real    0m0,065s
+10000 real    0m0,246s
+50000 real    0m5,075s
+5,075/0,065=78 times more time needed for 10 times more elements
+sorted
+real    0m0,021s
+real    0m0,612s
+
+sort2 uses: Merge sort
+
+How do you know?: Time needs for sorting from n to 10n elemets less then another algoritms in 2-4 times only merge sort makes so big difference because O(n lg n)
+
+random
+5000 real    0m0,034s
+10000 real    0m0,040s
+50000 real    0m0,421s
+0,421/0,034=12 times more time needed for 10 times more elements
+reversed
+5000 real    0m0,014s
+10000 real    0m0,069s
+50000 real    0m0,398s
+0,398/0,014=28 times more time needed for 10 times more elements
+sorted
+real    0m0,021s
+real    0m0,455s
+
+sort3 uses: Selection sort
+How do you know?: Selection sort algoritm using much more time for bigger list O(n^2)
+random
+5000 real    0m0,060s
+10000 real    0m0,156s
+50000 real    0m3,113s
+3,113/0,060=51 times more time needed for 10 times more elements
+reversed
+5000 real    0m0,041s
+10000 real    0m0,166s
+50000 real    0m3,082s
+3,082/0,041=75 times more time needed for 10 times more elements
+sorted
+real    0m0,039s
+real    0m3,215s
